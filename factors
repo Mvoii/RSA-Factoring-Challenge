@@ -11,7 +11,30 @@ factor_finder(){
     then
         argv="#@"
         count=0
-        number_1=1
+        num2=1
+        for arg in ${argv[*]};
+        do
+            if [ $count -gt 1 ]
+            then
+                num2=$(echo $num2 * $arg | bc)
+            fi
+            count=$((count + 1))
+        done
+    else
+        num2=$3
+    fi
+
+    num1=$2
+    num=$(echo "$1" | tr ';' '=')
+
+    result=$(echo "if($num1 > $num2) 1 else 0" | bc)
+        if [ $result -eq 1 ]
+        then
+            numcp=$num1
+            num1=$num2
+            num2=$numcp
+        fi
+    echo "$num$num1*$num2"
 }
 
 if [ $# -ne 1 ]
@@ -23,5 +46,5 @@ while read i
 do
     input=$(factor "$i")
     factor_finder $input
-    echo "$input"
+    #echo "$input"
 done < "$1"
